@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import DoctorDashboard from "./DoctorDashboard";
 
 const styles = `
   :root {
@@ -463,15 +464,23 @@ const Home = ({ onPatientRegister }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showUSSD, setShowUSSD] = useState(false);
+  const [doctorLoggedIn, setDoctorLoggedIn] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setShowAuth(false);
     setUsername('');
     setPassword('');
-    // For demo, all roles go to dashboard
-    onPatientRegister();
+    if (userRole === 'doctor') {
+      setDoctorLoggedIn(true);
+    } else {
+      onPatientRegister();
+    }
   };
+
+  if (doctorLoggedIn) {
+    return <DoctorDashboard />;
+  }
 
   return (
     <>
@@ -520,12 +529,12 @@ const Home = ({ onPatientRegister }) => {
           <form onSubmit={handleSubmit} style={{ background: 'white', borderRadius: 16, padding: 32, minWidth: 320, boxShadow: '0 8px 32px rgba(0,0,0,0.18)' }}>
             <h2 style={{ marginBottom: 18 }}>{authMode === 'register' ? 'Register' : 'Login'} as {userRole.charAt(0).toUpperCase() + userRole.slice(1)}</h2>
             <div className="form-group">
-              <label className="form-label">Username</label>
-              <input className="form-control" type="text" value={username} onChange={e => setUsername(e.target.value)} required />
+              <label className="form-label" htmlFor="username">Username</label>
+              <input className="form-control" id="username" name="username" type="text" autoComplete="username" value={username} onChange={e => setUsername(e.target.value)} required />
             </div>
             <div className="form-group">
-              <label className="form-label">Password</label>
-              <input className="form-control" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
+              <label className="form-label" htmlFor="password">Password</label>
+              <input className="form-control" id="password" name="password" type="password" autoComplete="current-password" value={password} onChange={e => setPassword(e.target.value)} required />
             </div>
             <div style={{ display: 'flex', gap: 12, marginTop: 18 }}>
               <button type="button" className="btn btn-outlined" onClick={() => setShowAuth(false)}>Cancel</button>
